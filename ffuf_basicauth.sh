@@ -13,7 +13,7 @@
 # in https://example.org/endpoint, and filter out 403 - Forbidden responses.
 # 
 # ./ffuf_basicauth.sh usernames.txt passwords.txt |ffuf -w -:AUTH \
-#    -u https://example.org/endpoint -H "Authorization: Basic AUTH" -fc 403
+#    -u https://example.org/endpoint -H "Authorization: Basic AUTH" -fc 403 -enc AUTH:b64encode
 #
 ##############################################################################
 
