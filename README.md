@@ -10,7 +10,7 @@ A script that generates base64 encoded combinations of username:password values 
 Test each HTTP basic authentication username:password combination in https://example.org/endpoint, and filter out 403 - Forbidden responses.
 
 ```
-./ffuf_basicauth.sh usernames.txt passwords.txt |ffuf -w -:AUTH -u https://example.org/endpoint -H "Authorization: Basic AUTH" -fc 403 -c
+./ffuf_basicauth.sh usernames.txt passwords.txt |ffuf -w -:AUTH -u https://example.org/endpoint -H "Authorization: Basic AUTH" -enc AUTH:b64encode -fc 403 -c 
 ```
 
 ## Contributing

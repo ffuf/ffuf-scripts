@@ -13,7 +13,7 @@
 # in https://example.org/endpoint, and filter out 403 - Forbidden responses.
 # 
 # ./ffuf_basicauth.sh usernames.txt passwords.txt |ffuf -w -:AUTH \
-#    -u https://example.org/endpoint -H "Authorization: Basic AUTH" -fc 403
+#    -u https://example.org/endpoint -H "Authorization: Basic AUTH" -fc 403 -enc AUTH:b64encode
 #
 ##############################################################################
 
@@ -36,19 +36,5 @@ fi
 
 USERNAME_WORDLIST="$1"
 PASSWORD_WORDLIST="$2"
-USERNAME_WORDLIST_SIZE=$(wc -l "$USERNAME_WORDLIST" |awk '{print $1;}')
-PASSWORD_WORDLIST_SIZE=$(wc -l "$PASSWORD_WORDLIST" |awk '{print $1;}')
-OUTPUT_WORDLIST_SIZE=$((USERNAME_WORDLIST_SIZE * PASSWORD_WORDLIST_SIZE))
 
-printf "\nGenerating HTTP basic authentication strings. This can take a while depending on the length of user and password lists.\n\n" >&2
-printf "Usernames: %s\n" "$USERNAME_WORDLIST_SIZE" >&2
-printf "Passwords: %s\n" "$PASSWORD_WORDLIST_SIZE" >&2
-printf "Total combinations: %s\n\n" "$OUTPUT_WORDLIST_SIZE" >&2
-
-while IFS= read -r user
-do
-    while IFS= read -r password
-    do
-        printf "%s:%s" "$user" "$password" |base64
-    done < "$PASSWORD_WORDLIST"
-done < "$USERNAME_WORDLIST"
+awk 'NR==FNR{user[NR]=$0; next} {for (i=1;i<=length(user);i++) {printf "%s:%s\n", user[i], $0}}' "$USERNAME_WORDLIST" "$PASSWORD_WORDLIST"
